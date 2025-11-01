@@ -1,0 +1,45 @@
+server:
+  port: ${SERVER_PORT:8888}
+
+spring:
+  application:
+    name: configuration-server
+  main:
+    banner-mode: off
+  cloud:
+    config:
+      server:
+        git:
+          clone-on-start: true
+          uri: ${GIT_URI:git@github.com:rafaelprudente/MEGSI-CONFIG-SERVER-DATA.git}
+          default-label: main
+          ignoreLocalSshSettings: false
+          #hostKeyAlgorithm: ssh-ed25519
+          #hostKey: AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+          #privateKey: ${SSH_KEY}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    env:
+      show-values: ALWAYS
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+
+logging:
+  level:
+    root: ${LOG_LEVEL:INFO}
