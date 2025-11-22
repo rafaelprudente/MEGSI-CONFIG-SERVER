@@ -8,11 +8,6 @@ pipeline {
     }
 
     stages {
-        stage('Checks') {
-            steps {
-                sh 'ls -lart /GITHUB'
-            }
-        }
         stage('Create settings.xml') {
             steps {
                 withCredentials([usernamePassword(
@@ -40,6 +35,30 @@ pipeline {
                             </mirror>
                         </mirrors>
                     </settings>'''
+                }
+            }
+        }
+        stage('Prepare SSH') {
+            steps {
+                withCredentials([sshUserPrivateKey(
+                credentialsId: 'GitHubSSH',
+                keyFileVariable: 'SSH_KEY'
+                )]) {
+                    sh '''
+                    cp "$SSH_KEY" megsi-config-server
+                    '''
+                }
+            }
+        }
+        stage('Prepare Pub SSH') {
+            steps {
+                withCredentials([sshUserPrivateKey(
+                credentialsId: 'GitHubSSHPub',
+                keyFileVariable: 'SSH_KEY'
+                )]) {
+                    sh '''
+                    cp "$SSH_KEY" megsi-config-server.pub
+                    '''
                 }
             }
         }
