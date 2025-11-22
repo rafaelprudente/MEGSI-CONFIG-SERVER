@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checks') {
             steps {
-                ls -lart
+                sh 'ls -lart'
             }
         }
         stage('Create settings.xml') {
