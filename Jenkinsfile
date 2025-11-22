@@ -8,6 +8,11 @@ pipeline {
     }
 
     stages {
+        stage('Checks') {
+            steps {
+                ls -lart
+            }
+        }
         stage('Create settings.xml') {
             steps {
                 withCredentials([usernamePassword(
