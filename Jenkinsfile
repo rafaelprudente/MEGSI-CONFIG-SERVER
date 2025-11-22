@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checks') {
             steps {
-                sh 'ls -lart'
+                sh 'ls -lart /GITHUB'
             }
         }
         stage('Create settings.xml') {
