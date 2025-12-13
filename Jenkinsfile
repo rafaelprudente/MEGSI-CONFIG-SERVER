@@ -1,57 +1,67 @@
 pipeline {
-    agent any
+  agent {
+    kubernetes {
+      yaml """
+apiVersion: v1
+kind: Pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: kaniko
+      image: gcr.io/kaniko-project/executor:v1.23.2
+      command:
+        - cat
+      tty: true
+      volumeMounts:
+        - name: docker-config
+          mountPath: /kaniko/.docker
+  volumes:
+    - name: docker-config
+      secret:
+        secretName: onedev-registry
+"""
+    }
+  }
 
-    tools { maven 'mvn' }
-    
-    environment {
-        IMAGE_NAME = "configuration-server"
+  environment {
+    REGISTRY   = "192.168.56.214:30610"
+    PROJECT    = "UMINHO"
+    IMAGE_NAME = "meu-app"              // ajuste para o nome do repo/app
+    IMAGE_TAG  = "${env.BUILD_NUMBER}"
+  }
+
+  stages {
+
+    stage('Checkout') {
+      steps {
+        checkout scm
+      }
     }
 
-    stages {
-        stage('Prepare SSH') {
-            steps {
-                withCredentials([sshUserPrivateKey(
-                credentialsId: 'GitHubSSH',
-                keyFileVariable: 'SSH_KEY'
-                )]) {
-                    sh '''
-                    cp "$SSH_KEY" megsi-config-server
-                    '''
-                }
-            }
+    stage('Build & Push Image (Kaniko)') {
+      steps {
+        container('kaniko') {
+          sh '''
+            /kaniko/executor \
+              --context $WORKSPACE \
+              --dockerfile Dockerfile \
+              --destination $REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG \
+              --destination $REGISTRY/$PROJECT/$IMAGE_NAME:latest \
+              --insecure \
+              --skip-tls-verify
+          '''
         }
-        stage('Prepare Pub SSH') {
-            steps {
-                withCredentials([sshUserPrivateKey(
-                credentialsId: 'GitHubSSHPub',
-                keyFileVariable: 'SSH_KEY'
-                )]) {
-                    sh '''
-                    cp "$SSH_KEY" megsi-config-server.pub
-                    '''
-                }
-            }
-        }
-        stage('Build Package') {
-            steps {
-                sh 'mvn -B -DskipTests clean package'
-            }
-        }
-        stage('Build Image') {
-            steps {
-                script {
-                    image = docker.build("uminho/${env.IMAGE_NAME}:latest", ".")
-                }
-            }
-        }
-        stage('Push Image') {
-            steps {
-                script {
-                    docker.withRegistry('http://192.168.56.213:6610', 'OneDev') {
-                        image.push()
-                    }
-                }
-            }
-        }
+      }
     }
+  }
+
+  post {
+    success {
+      echo "Imagem criada com sucesso:"
+      echo "$REGISTRY/$PROJECT/$IMAGE_NAME:$IMAGE_TAG"
+    }
+    failure {
+      echo "Falha no build da imagem."
+    }
+  }
 }
