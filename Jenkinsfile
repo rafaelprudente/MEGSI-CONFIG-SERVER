@@ -21,6 +21,9 @@ spec:
     - name: docker-config
       secret:
         secretName: onedev-registry
+        items:
+          - key: .dockerconfigjson
+            path: config.json
 """
     }
   }
