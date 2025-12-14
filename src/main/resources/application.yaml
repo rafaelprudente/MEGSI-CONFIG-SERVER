@@ -11,17 +11,12 @@ spring:
       server:
         git:
           clone-on-start: true
-          uri: ${GIT_URI:git@github.com:rafaelprudente/MEGSI-CONFIG-SERVER-DATA.git}
+          uri: ${GIT_URI:https://github.com/rafaelprudente/MEGSI-CONFIG-SERVER-DATA.git}
           default-label: main
-          ignoreLocalSshSettings: false
+          #ignoreLocalSshSettings: true
           #hostKeyAlgorithm: ssh-ed25519
           #hostKey: AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
           #privateKey: ${SSH_KEY}
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
 
 management:
   endpoints:

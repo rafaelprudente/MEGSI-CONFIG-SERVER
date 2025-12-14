@@ -21,9 +21,6 @@ RUN apt-get update && \
     echo "  IdentitiesOnly yes" >> /root/.ssh/config && \
     chmod 600 /root/.ssh/config
 
-COPY megsi-config-server /root/.ssh/megsi-config-server
-COPY megsi-config-server.pub /root/.ssh/megsi-config-server.pub
-
 COPY target/*.jar /opt/app.jar
 
 ENTRYPOINT ["/bin/sh", "-c", "java -jar /opt/app.jar"]
