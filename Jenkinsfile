@@ -7,6 +7,12 @@ kind: Pod
 spec:
   restartPolicy: Never
   containers:
+      - name: maven
+        image: maven:3.9.9-eclipse-temurin-21
+        command:
+          - cat
+        tty: true
+        
       - name: kaniko
         image: gcr.io/kaniko-project/executor:debug
         command:
@@ -40,6 +46,14 @@ spec:
     stage('Checkout') {
       steps {
         checkout scm
+      }
+    }
+
+    stage('Build JAR') {
+      steps {
+        container('maven') {
+          sh 'mvn clean package -DskipTests'
+        }
       }
     }
 
