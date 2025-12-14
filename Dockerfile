@@ -3,7 +3,7 @@ FROM bellsoft/liberica-openjre-debian:21
 WORKDIR /opt
 ENV SERVER_PORT=8888
 ENV LOG_LEVEL=INFO
-ENV GIT_URI=git@github.com:rafaelprudente/MEGSI-CONFIG-SERVER-DATA.git
+ENV GIT_URI=https://github.com/rafaelprudente/MEGSI-CONFIG-SERVER-DATA.git
 ENV GIT_BRANCH=main
 
 EXPOSE 8888
