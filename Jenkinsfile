@@ -27,8 +27,8 @@ spec:
 
   environment {
     REGISTRY   = "192.168.56.214:30610"
-    PROJECT    = "UMINHO"
-    IMAGE_NAME = "meu-app"              // ajuste para o nome do repo/app
+    PROJECT    = "UMINHO".toLowerCase()
+    IMAGE_NAME = "configuration-server"              // ajuste para o nome do repo/app
     IMAGE_TAG  = "${env.BUILD_NUMBER}"
   }
 
