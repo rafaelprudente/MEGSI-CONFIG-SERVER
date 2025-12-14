@@ -35,7 +35,7 @@ spec:
   }
 
   environment {
-    REGISTRY = "onedev-external.uminho.svc.cluster.local:6610"
+    REGISTRY   = "192.168.56.214:30610"
     PROJECT    = "uminho"
     IMAGE_NAME = "configuration-server"
     IMAGE_TAG  = "${env.BUILD_NUMBER}"
